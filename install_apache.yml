@@ -9,15 +9,11 @@
       update_cache: yes 
     when: ansible_os_family == "Debian"
   
-  - name: install apache2 package
+  - name: install apache2 package & add php support for apache
     apt:
       name: apache2
-      state: latest
-    when: ansible_os_family == "Debian"
-
-  - name: add php support for apache
-    apt:
       name: libapache2-mod-php
+      state: latest
     when: ansible_os_family == "Debian"
 
   - name: update repository index
@@ -25,15 +21,11 @@
       update_cache: yes 
     when: ansible_os_family == "Rocky"
 
-  - name: install httpd package
+  - name: install httpd package & add php support for httpd
     yum:
       name: httpd
-      state: latest
-    when: ansible_os_family == "Rocky"
-
-  - name: add php support for httpd
-    yum:
       name: php
+      state: latest
     when: ansible_os_family == "Rocky"
 
 
