@@ -4,29 +4,14 @@
   become: true
   tasks:
   
-  - name: update repository index
-    apt:
-      update_cache: yes 
-    when: ansible_os_family == "Debian"
-  
-  - name: install apache2 package & add php support for apache
-    apt:
-      name: apache2
-      name: libapache2-mod-php
+  - name: install apache & php
+    package:
+      name:
+        - "{{ apache_package }}"
+        - "{{ php_package }}"
       state: latest
-    when: ansible_os_family == "Debian"
+      update_cache: yes
 
-  - name: update repository index
-    yum:
-      update_cache: yes 
-    when: ansible_os_family == "Rocky"
-
-  - name: install httpd package & add php support for httpd
-    yum:
-      name: httpd
-      name: php
-      state: latest
-    when: ansible_os_family == "Rocky"
 
 
 
