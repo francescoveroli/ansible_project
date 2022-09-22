@@ -18,6 +18,34 @@
       update_cache: yes
     when: ansible_distribution == "Ubuntu"
 
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: create orca user
+    tags: always
+    user:
+      name: orca
+      groups: root
+
+
+  - name: add ssh key for orca
+    tags: always
+    authorized_key:
+      user: orca
+      key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDAH4l/aZq+6D8spuTCCudb/kk6Q53tWjW5rQa9SICLsrKt4YRG1MVSRD4Wc0CFd2Loo98NOcpZVpAsr36DWyFYy3axj0VtEbraMi6y1Kh+PSR7YCDpGP9fBKqtlM5Unzb0PZ3waSPgZPijGxhy0FauiIQQm6E6S7SriYfofF3Wx7zoW0RUmOWuNnYOEFITooXcFI0XlA0o7rgHpKpIK0SgW8HRAQVGYSciiqDvIfYdVPq0wdblGPEUHSwGz53dlJrpEraIQBx+Ev51Ht0FNrv9qWqiSOdDrERr4gOWSJ/eua+x1U+z/HHto5qTy3N18NH/rvRseNAj/zMbMRXM10OyOWrkV4sjS1GwymQPlxQzJ/QLGnF20ie1xzt9+xyjP3QhTtE0Rql9tzWRY4J3GO6RHbJBLZkaRmar6pl6qGzfw52ggKFlaPFCfSZvYx0ewRpMkcPjHAkMVOOhhkA9ysYQIOfxkLXFtVpzAqVYe9NMuMnNvdrsiHwfz472D5qTJ/c= ansible"
+  
+  - name: add sudoers file for orca
+    tags: always
+    copy:
+      src: sudoers_orca
+      dest: /etc/sudoers.d/orca
+      owner: root
+      group: root
+      mode: 0440
+
+
 - hosts: workstation
   become: true
   tasks:
@@ -57,6 +85,14 @@
         - php
       state: latest
     when: ansible_distribution == "CentOS"
+
+  - name: start httpd (CentOS)
+    tags: apache,centos,httpd
+    service:
+      name: httpd
+      state: started
+    when: ansible_distribution == "Rocky"
+
 
   - name: copy default html file for site
     tags: apache,apache2,httpd
